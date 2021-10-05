@@ -11,6 +11,11 @@ type AppInfo struct {
 	AppVersion string `json:"app_version"`
 }
 
+//Card карта - единица коллекционирования
+type Card struct {
+	Name string `json:"name"`
+}
+
 func main() {
 	e := echo.New()
 
@@ -20,6 +25,15 @@ func main() {
 			AppName:    "card-collection",
 			AppVersion: "0.1.0",
 		})
+	})
+
+	// создание карт
+	e.POST("/cards", func(c echo.Context) error {
+		var cards []Card
+		if err := c.Bind(&cards); err != nil {
+			return err
+		}
+		return c.JSON(http.StatusOK, cards)
 	})
 
 	e.Logger.Fatal(e.Start(":8080"))
