@@ -48,5 +48,20 @@ func main() {
 		return c.JSON(http.StatusOK, tempCards)
 	})
 
+	//получаем все карты
+	e.GET("/cards", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, m)
+	})
+
+	//получаем карту по uuid
+	e.GET("/cards/:key", func(c echo.Context) error {
+		key := c.Param("key")
+		card, ok := m[key]
+		if !ok {
+			return c.JSON(http.StatusNotFound, "Card not found")
+		}
+		return c.JSON(http.StatusOK, card)
+	})
+
 	e.Logger.Fatal(e.Start(":8080"))
 }
