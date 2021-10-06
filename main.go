@@ -21,8 +21,7 @@ type Card struct {
 func main() {
 	e := echo.New()
 
-	var m map[string]Card
-	m = make(map[string]Card)
+	m := make(map[string]Card)
 
 	// обязательный роут с информацией о приложении
 	e.GET("/info", func(c echo.Context) error {
@@ -38,8 +37,7 @@ func main() {
 		if err := c.Bind(&cards); err != nil {
 			return err
 		}
-		var tempCards map[string]Card
-		tempCards = make(map[string]Card)
+		tempCards := make(map[string]Card)
 
 		for _, c := range cards {
 			id := uuid.New().String()
@@ -57,8 +55,8 @@ func main() {
 
 	// получаем карту по uuid
 	e.GET("/cards/:id", func(c echo.Context) error {
-		key := c.Param("id")
-		card, ok := m[key]
+		id := c.Param("id")
+		card, ok := m[id]
 		if !ok {
 			return c.JSON(http.StatusNotFound, "card not found")
 		}
