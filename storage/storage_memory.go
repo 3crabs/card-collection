@@ -11,7 +11,7 @@ type storageMemory struct {
 	cards map[string]models.Card
 }
 
-func NewStorageMemory() *storageMemory {
+func NewStorageMemory() Storage {
 	return &storageMemory{cards: make(map[string]models.Card)}
 }
 

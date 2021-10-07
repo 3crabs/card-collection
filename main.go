@@ -13,44 +13,69 @@ type AppInfo struct {
 	AppVersion string `json:"app_version"`
 }
 
-func main() {
-	e := echo.New()
+type server struct {
+	store  storage.Storage
+	router *echo.Echo
+}
 
-	// потом поменять на интерфейс и выбирать в зависимости от среды реализации
-	store := storage.NewStorageMemory()
+func newServer() *server {
+	s := &server{
+		store:  storage.NewStorageMemory(),
+		router: echo.New(),
+	}
+	s.routes()
+	return s
+}
 
-	// обязательный роут с информацией о приложении
-	e.GET("/info", func(c echo.Context) error {
+func (s *server) routes() {
+	s.router.GET("/info", s.handleInfo())
+	s.router.POST("/cards", s.handleAddCards())
+	s.router.GET("/cards", s.handleGetAllCards())
+	s.router.GET("/cards/:id", s.handleGetCardById())
+}
+
+// обязательный роут с информацией о приложении
+func (s *server) handleInfo() echo.HandlerFunc {
+	return func(c echo.Context) error {
 		return c.JSON(http.StatusOK, AppInfo{
 			AppName:    "card-collection",
-			AppVersion: "0.1.0",
+			AppVersion: "0.2.0",
 		})
-	})
+	}
+}
 
-	// создание карт
-	e.POST("/cards", func(c echo.Context) error {
+// создание карт
+func (s *server) handleAddCards() echo.HandlerFunc {
+	return func(c echo.Context) error {
 		var cards []models.Card
 		if err := c.Bind(&cards); err != nil {
 			return c.JSON(http.StatusInternalServerError, err)
 		}
-		tempCards := store.AddCards(cards)
+		tempCards := s.store.AddCards(cards)
 		return c.JSON(http.StatusOK, tempCards)
-	})
+	}
+}
 
-	// получаем все карты
-	e.GET("/cards", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, store.GetAllCards())
-	})
+// получаем все карты
+func (s *server) handleGetAllCards() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		return c.JSON(http.StatusOK, s.store.GetAllCards())
+	}
+}
 
-	// получаем карту по uuid
-	e.GET("/cards/:id", func(c echo.Context) error {
+// получаем карту по uuid
+func (s *server) handleGetCardById() echo.HandlerFunc {
+	return func(c echo.Context) error {
 		id := c.Param("id")
-		card, err := store.GetCardById(id)
+		card, err := s.store.GetCardById(id)
 		if err != nil {
 			return c.JSON(http.StatusNotFound, err)
 		}
 		return c.JSON(http.StatusOK, card)
-	})
+	}
+}
 
-	e.Logger.Fatal(e.Start(":8080"))
+func main() {
+	s := newServer()
+	s.router.Logger.Fatal(s.router.Start(":8080"))
 }
