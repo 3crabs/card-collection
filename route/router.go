@@ -9,10 +9,6 @@ import (
 func Init() *echo.Echo {
 	e := echo.New()
 
-	//e.GET("/", controller.Home)
-
-	//e.GET("/users", controller.GetUsers)
-
 	e.GET("/info", controller.HandleInfo)
 	e.POST("/cards", controller.AddCards)
 	e.GET("/cards", controller.GetAllCards)

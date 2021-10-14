@@ -16,7 +16,7 @@ func Init() {
 	var err error
 	conString := config.GetPostgresConnectionString()
 
-	log.Print(conString)
+	//log.Print(conString)
 
 	DB, err = gorm.Open("postgres", conString)
 
