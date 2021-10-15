@@ -13,5 +13,6 @@ func Init() *echo.Echo {
 	e.POST("/cards", controller.AddCards)
 	e.GET("/cards", controller.GetAllCards)
 	e.GET("/cards/:id", controller.GetCardById)
+
 	return e
 }

@@ -16,19 +16,12 @@ func Init() {
 	var err error
 	conString := config.GetPostgresConnectionString()
 
-	//log.Print(conString)
-
 	DB, err = gorm.Open("postgres", conString)
 
 	if err != nil {
 		log.Panic(err)
-		panic("DB Connection Error")
 	}
 	DB.AutoMigrate(&models.Card{})
-}
-
-func GetDBInstance() *gorm.DB {
-	return DB
 }
 
 func AddCards(cards []models.Card) []models.Card {

@@ -8,6 +8,5 @@ import (
 func main() {
 	storage.Init()
 	e := route.Init()
-
 	e.Logger.Fatal(e.Start(":8080"))
 }

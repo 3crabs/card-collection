@@ -3,14 +3,15 @@ package config
 import (
 	"fmt"
 	"github.com/tkanos/gonfig"
+	"log"
 )
 
 type Configuration struct {
-	DB_USERNAME string
-	DB_PASSWORD string
-	DB_PORT     string
-	DB_HOST     string
-	DB_NAME     string
+	DbUsername string
+	DbPassword string
+	DbPort     string
+	DbHost     string
+	DbName     string
 }
 
 func GetConfig(params ...string) Configuration {
@@ -20,18 +21,20 @@ func GetConfig(params ...string) Configuration {
 		env = params[0]
 	}
 	fileName := fmt.Sprintf("./%s_config.json", env)
-	gonfig.GetConf(fileName, &configuration)
+	err := gonfig.GetConf(fileName, &configuration)
+	if err != nil {
+		log.Panicln(err)
+	}
 	return configuration
 }
 
 func GetPostgresConnectionString() string {
 	config := GetConfig("dev")
 	dataBase := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
-		config.DB_HOST,
-		config.DB_PORT,
-		config.DB_USERNAME,
-		config.DB_NAME,
-		config.DB_PASSWORD)
-
+		config.DbHost,
+		config.DbPort,
+		config.DbUsername,
+		config.DbName,
+		config.DbPassword)
 	return dataBase
 }

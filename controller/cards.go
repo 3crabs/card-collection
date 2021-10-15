@@ -14,7 +14,6 @@ func HandleInfo(c echo.Context) error {
 		AppName:    "card-collection",
 		AppVersion: "0.2.0",
 	})
-
 }
 
 // AddCards создание карт

@@ -11,10 +11,6 @@ type storageMemory struct {
 	cards map[string]models.Card
 }
 
-//func InitMemory() Storage {
-//	return &storageMemory{cards: make(map[string]models.Card)}
-//}
-
 func (s storageMemory) AddCards(cards []models.Card) []models.Card {
 	var tempCards []models.Card
 	for _, c := range cards {
