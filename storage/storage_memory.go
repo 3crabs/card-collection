@@ -11,7 +11,15 @@ type storageMemory struct {
 	cards map[string]models.Card
 }
 
-func (s storageMemory) AddCards(cards []models.Card) []models.Card {
+func newStorageMemory() *storageMemory {
+	return &storageMemory{}
+}
+
+func (s *storageMemory) Init() {
+	s.cards = make(map[string]models.Card)
+}
+
+func (s *storageMemory) AddCards(cards []models.Card) []models.Card {
 	var tempCards []models.Card
 	for _, c := range cards {
 		id := uuid.New().String()
@@ -22,7 +30,7 @@ func (s storageMemory) AddCards(cards []models.Card) []models.Card {
 	return tempCards
 }
 
-func (s storageMemory) GetAllCards() []models.Card {
+func (s *storageMemory) GetAllCards() []models.Card {
 	var tmp []models.Card
 	for _, card := range s.cards {
 		tmp = append(tmp, card)
@@ -30,7 +38,7 @@ func (s storageMemory) GetAllCards() []models.Card {
 	return tmp
 }
 
-func (s storageMemory) GetCardById(id string) (models.Card, error) {
+func (s *storageMemory) GetCardById(id string) (models.Card, error) {
 	for _, card := range s.cards {
 		if card.Id == id {
 			return card, nil

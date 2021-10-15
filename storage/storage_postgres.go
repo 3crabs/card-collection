@@ -10,41 +10,48 @@ import (
 	"log"
 )
 
-var DB *gorm.DB
+//storageDb хранилище данных в postgres
+type storageDb struct {
+	Db *gorm.DB
+}
 
-func Init() {
+func newStorageDb() *storageDb {
+	return &storageDb{}
+}
+
+func (s *storageDb) Init() {
 	var err error
 	conString := config.GetPostgresConnectionString()
 
-	DB, err = gorm.Open("postgres", conString)
+	s.Db, err = gorm.Open("postgres", conString)
 
 	if err != nil {
 		log.Panic(err)
 	}
-	DB.AutoMigrate(&models.Card{})
+	s.Db.AutoMigrate(&models.Card{})
 }
 
-func AddCards(cards []models.Card) []models.Card {
+func (s storageDb) AddCards(cards []models.Card) []models.Card {
 	var tempCards []models.Card
 	for _, c := range cards {
 		id := uuid.New().String()
 		c.Id = id
-		DB.Create(&c)
+		s.Db.Create(&c)
 		tempCards = append(tempCards, c)
 	}
 	return tempCards
 }
 
-func GetAllCards() []models.Card {
+func (s storageDb) GetAllCards() []models.Card {
 	var cards []models.Card
-	_ = DB.Find(&cards)
+	_ = s.Db.Find(&cards)
 	return cards
 }
 
-func GetCardById(id string) (models.Card, error) {
+func (s storageDb) GetCardById(id string) (models.Card, error) {
 	card := models.Card{}
-	_ = DB.Find(&card, "id = ?", id)
-	if result := DB.First("id = ?", id).First(&card); result.Error != nil {
+	_ = s.Db.Find(&card, "id = ?", id)
+	if result := s.Db.First("id = ?", id).First(&card); result.Error != nil {
 		return models.Card{}, errors.New("card not found")
 	}
 	return card, nil

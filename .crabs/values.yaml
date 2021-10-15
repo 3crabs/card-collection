@@ -1,0 +1,11 @@
+crabs:
+  app:
+    name: "card_collection"
+    version: "0.2.0"
+
+db:
+  host: "localhost"
+  port: "5432"
+  name: "db"
+  username: "username"
+  password: "password"
